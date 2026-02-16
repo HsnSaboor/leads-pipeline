@@ -2,17 +2,24 @@
 """
 WhatsApp Number Validator using Evolution API
 Fast, free, no browser automation
+
+Environment Variables:
+- EVOLUTION_API_URL: URL of Evolution API (default: https://evoapi.botomation.tech)
+- EVOLUTION_API_KEY: API key for Evolution API
+- EVOLUTION_INSTANCE: Instance name to use (default: demo)
 """
 
 import csv
+import os
 import re
 import sys
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-EVOLUTION_API_URL = "https://evoapi.botomation.tech"
-EVOLUTION_API_KEY = "429683C4C977415CAAFCCE10F7D57E11"
-INSTANCE_NAME = "demo"
+# Load from environment variables
+EVOLUTION_API_URL = os.getenv("EVOLUTION_API_URL", "https://evoapi.botomation.tech")
+EVOLUTION_API_KEY = os.getenv("EVOLUTION_API_KEY", "")
+INSTANCE_NAME = os.getenv("EVOLUTION_INSTANCE", "demo")
 
 
 def format_pakistani_phone(phone):
@@ -33,6 +40,10 @@ def format_pakistani_phone(phone):
 
 def check_whatsapp_api(numbers_list):
     """Check multiple numbers at once using Evolution API"""
+    if not EVOLUTION_API_KEY:
+        print("ERROR: EVOLUTION_API_KEY not set!")
+        return None
+
     url = f"{EVOLUTION_API_URL}/chat/whatsappNumbers/{INSTANCE_NAME}"
     headers = {"Content-Type": "application/json", "apikey": EVOLUTION_API_KEY}
     body = {"numbers": numbers_list}
@@ -41,8 +52,10 @@ def check_whatsapp_api(numbers_list):
         resp = requests.post(url, json=body, headers=headers, timeout=30)
         if resp.status_code == 200:
             return resp.json()
+        print(f"API Error: {resp.status_code} - {resp.text}")
         return None
-    except requests.RequestException:
+    except requests.RequestException as e:
+        print(f"Request Error: {e}")
         return None
 
 
@@ -66,6 +79,11 @@ def check_whatsapp(phone):
 def process_leads(input_file, output_file, max_workers=15, batch_size=50):
     """Process all leads and check WhatsApp status"""
 
+    if not EVOLUTION_API_KEY:
+        print("ERROR: EVOLUTION_API_KEY environment variable is not set!")
+        print("Set it with: export EVOLUTION_API_KEY=your_api_key")
+        sys.exit(1)
+
     with open(input_file, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         original_fields = list(reader.fieldnames)
@@ -73,6 +91,8 @@ def process_leads(input_file, output_file, max_workers=15, batch_size=50):
         rows = list(reader)
 
     print(f"Checking {len(rows)} numbers on WhatsApp...")
+    print(f"Using API: {EVOLUTION_API_URL}")
+    print(f"Instance: {INSTANCE_NAME}")
 
     phones_to_check = []
     for row in rows:

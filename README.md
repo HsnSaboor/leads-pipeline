@@ -8,24 +8,53 @@ Automated lead generation for local businesses in Pakistan using Google Maps scr
 - **Filter**: Remove businesses that already have websites
 - **WhatsApp Check**: Verify phone numbers using Evolution API
 
+## Configuration
+
+### 1. Evolution API Setup
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your values:
+- `EVOLUTION_API_KEY` - Required. Get from your Evolution API instance
+- `EVOLUTION_API_URL` - Optional. Default: `https://evoapi.botomation.tech`
+- `EVOLUTION_INSTANCE` - Optional. Default: `demo`
+
+Or set via environment variable:
+```bash
+export EVOLUTION_API_KEY=your_api_key_here
+```
+
+### 2. Python Environment
+
+```bash
+# Create virtual environment
+uv venv .venv
+
+# Activate
+source .venv/bin/activate
+
+# Install dependencies
+uv pip install requests
+```
+
 ## Quick Start
 
 ```bash
 # Run full pipeline
 cd leads-project
+source .venv/bin/activate
+export EVOLUTION_API_KEY=your_key_here
 ./run_pipeline.sh
 ```
-
-## Requirements
-
-- Docker
-- Python 3.x with `requests` (use venv)
-- Evolution API (pre-configured)
 
 ## Manual Steps
 
 ```bash
-# 1. Scrape
+# 1. Scrape (requires Docker)
 docker run --rm \
   -v "$PWD/queries:/queries" \
   -v "$PWD/raw_data/results.csv:/results.csv" \
@@ -37,6 +66,7 @@ docker run --rm \
 
 # 2. Filter leads without websites
 source .venv/bin/activate
+export EVOLUTION_API_KEY=your_key_here
 python3 scripts/filter_leads.py raw_data/results.csv filtered_data/leads.csv
 
 # 3. Check WhatsApp
@@ -57,3 +87,17 @@ Edit `queries/target_queries.txt` to customize:
 - ~120 places/minute with `-c 8 -depth 1`
 - Rod browser (faster startup)
 - Batch WhatsApp checking (50 numbers/request)
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `EVOLUTION_API_KEY` | Yes | - | API key for Evolution API |
+| `EVOLUTION_API_URL` | No | `https://evoapi.botomation.tech` | Evolution API URL |
+| `EVOLUTION_INSTANCE` | No | `demo` | Instance name to use |
+
+## Output Files
+
+- `raw_data/results.csv` - Raw scraped data
+- `filtered_data/leads_without_website.csv` - Businesses without websites
+- `filtered_data/final_leads.csv` - Final leads with WhatsApp status

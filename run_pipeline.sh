@@ -6,6 +6,14 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Load environment variables from .env file if it exists
+if [ -f "$PROJECT_DIR/.env" ]; then
+    echo "Loading environment from .env..."
+    set -a
+    source "$PROJECT_DIR/.env"
+    set +a
+fi
+
 # Activate virtual environment
 if [ -f "$PROJECT_DIR/.venv/bin/activate" ]; then
     source "$PROJECT_DIR/.venv/bin/activate"
@@ -14,8 +22,17 @@ else
     exit 1
 fi
 
+# Check required environment variables
+if [ -z "$EVOLUTION_API_KEY" ]; then
+    echo "ERROR: EVOLUTION_API_KEY is not set!"
+    echo "Set it in .env file or export EVOLUTION_API_KEY=your_key"
+    exit 1
+fi
+
 echo "=== Lead Generation Pipeline ==="
 echo "Performance: Rod browser, c=8, depth=1"
+echo "API: $EVOLUTION_API_URL"
+echo "Instance: $EVOLUTION_INSTANCE"
 echo ""
 
 # Step 1: Check for Docker
