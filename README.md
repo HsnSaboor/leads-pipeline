@@ -6,12 +6,12 @@ CLI tool for automated lead generation from Google Maps with WhatsApp verificati
 
 **Linux/macOS:**
 ```
-curl -fsSL https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/master/install.sh | sh
 ```
 
 **Windows (PowerShell):**
 ```
-irm "https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/main/install.ps1" | iex
+irm "https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/master/install.ps1" | iex
 ```
 
 ## Quick Start

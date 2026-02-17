@@ -1,6 +1,6 @@
 #!/bin/bash
 # Lead Generation Pipeline Installer for Linux/macOS
-# Run: curl -fsSL https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/main/install.sh | sh
+# Run: curl -fsSL https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/master/install.sh | sh
 
 set -e
 

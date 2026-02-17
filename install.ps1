@@ -1,5 +1,5 @@
 # Lead Generation Pipeline Installer for Windows
-# Run: irm "https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/main/install.ps1" | iex
+# Run: irm "https://raw.githubusercontent.com/HsnSaboor/leads-pipeline/master/install.ps1" | iex
 
 param(
     [string]$Version = "latest",
